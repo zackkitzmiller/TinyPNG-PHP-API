@@ -21,26 +21,19 @@ class TinyPNG
     public function __construct($key)
     {
         $this->key = $key;
-    }
 
-    /**
-     * Instantiate curl request if not already created
-     * @return resource
-     */
-    private function getCurl()
-    {
-        if (is_null($this->curl)) {
+        if ($this->curl === null) {
             $this->curl = curl_init();
-            curl_setopt_array($this->curl, array(
+            $curlOpts = array(
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_URL => $this->url,
                 CURLOPT_USERAGENT => 'TinyPNG PHP API v1',
                 CURLOPT_POST => 1,
                 CURLOPT_USERPWD => 'api:' . $this->key,
                 CURLOPT_BINARYTRANSFER => 1
-            ));
+            );
+            curl_setopt_array($this->curl, $curlOpts);
         }
-        return $this->curl;
     }
 
     /**
@@ -56,13 +49,43 @@ class TinyPNG
     }
 
     /**
-     * Return API response
-     * @param  boolean $object Return as object or JSON string
-     * @return object|string
+     * Return API response object
+     * @return object|exception
      */
-    public function getResult($object = FALSE)
-    {
-        return ($object ? json_decode($this->lastResult) : $this->lastResult);
+    public function getResult() {
+        return $this->_getResult();
     }
 
+    /**
+     * Return API response as JSON
+     * @return string|exception
+     */
+    public function getResultJson() {
+        return json_decode($this->_getResult());
+    }
+
+    /**
+     * Return API response object
+     * @return object|exception
+     */
+    protected function _getResult()
+    {
+        if ($this->lastResult === null) {
+            throw new Exception('No current result');
+        }
+        return $this->lastResult;
+    }
+
+    /**
+     * Return Curl object
+     * @return object|exception
+     */
+    protected function getCurl()
+    {
+        if ($this->curl === null) {
+            throw new Exception('cURL not yet initialized.');
+        }
+
+        return $this->curl;
+    }
 }
