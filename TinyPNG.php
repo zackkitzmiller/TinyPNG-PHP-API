@@ -10,7 +10,7 @@ class TinyPNG
 {
 
     private $url = 'http://api.tinypng.org/api/shrink';
-    private $key = '';
+    private $key = null;
     private $curl = null;
     private $lastResult = null;
 
