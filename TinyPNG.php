@@ -1,4 +1,10 @@
 <?php
+/**
+ *	TinyPNG API v1
+ *
+ * 	Michael Wright - @michaelw90
+ */
+
 
 class TinyPNG {
 
